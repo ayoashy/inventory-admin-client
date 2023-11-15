@@ -2,16 +2,16 @@ import { isAxiosError } from 'axios';
 import { authenticatedApi, unauthenticatedApi } from '../../helpers/axiosAPI';
 
 type RegisterPostType = {
-  name: string;
-  password: string;
-  email: string;
+  name: string | undefined;
+  password: string | undefined;
+  email: string | undefined;
 };
 
 type LoginPostType = Omit<RegisterPostType, 'name'>;
 type ForgetPasswordPostType = Pick<RegisterPostType, 'email'>;
 type ResetPasswordType = {
-  resetToken: string;
-  password: string;
+  resetToken: string | undefined;
+  password: string | undefined;
 };
 
 const registerApi = async (post: RegisterPostType) => {

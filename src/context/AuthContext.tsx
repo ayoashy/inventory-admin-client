@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getUserApi } from '../data/api/auth';
+import Loader from '../common/Loader';
 
 const AuthContext = createContext(undefined);
 
@@ -22,7 +23,7 @@ const AuthProvider = (props: any) => {
   }, []);
 
   if (loading) {
-    return <h2>loading...</h2>;
+    return <Loader />;
   }
 
   return <AuthContext.Provider {...props} value={user} />;
