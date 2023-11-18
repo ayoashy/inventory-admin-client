@@ -4,7 +4,7 @@ import { useRegisterApi } from '../../data/hooks/auth';
 import { Link } from 'react-router-dom';
 import { Alert, App } from 'antd';
 
-const Login = () => {
+const Register = () => {
   const { message } = App.useApp();
   const [registerState, setRegisterState] = useState({
     name: '',
@@ -208,4 +208,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

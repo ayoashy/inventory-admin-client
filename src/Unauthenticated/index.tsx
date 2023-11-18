@@ -3,11 +3,11 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { App as AntDesignApp } from 'antd';
 
 import React from 'react';
-import Register from './pages/Register';
-import ResetPassword from './pages/ResetPassword';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import ResetPassword from './pages/ResetPassword';
+import Register from './pages/Register';
 
 const router = createBrowserRouter([
   {
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
 
   {
     path: '/*',
-    element: <Navigate to='/login' />,
+    element: <Navigate to="/login" />,
   },
 ]);
 
