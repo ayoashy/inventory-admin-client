@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import UserOne from '../images/user/user-01.png';
+import { useAuth } from '../context/AuthContext';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const userData = useAuth();
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -45,13 +48,14 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {userData?.user.name}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">Admin</span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+        <span className="h-12 w-12 rounded-full flex justify-center items-center bg-primary ">
+          {/* <img src={UserOne} alt="User" /> */}
+          <span className="text-2xl text-white">{userData?.user.name[0]}</span>
         </span>
 
         <svg

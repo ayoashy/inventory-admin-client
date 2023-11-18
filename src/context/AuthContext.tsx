@@ -1,8 +1,21 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getUserApi } from '../data/api/auth';
 import Loader from '../common/Loader';
+type UserContextType = {
+  email: string;
+  name: string;
+  resetPassword?: string;
+  resetPasswordExpire?: string;
+  type: string;
+};
 
-const AuthContext = createContext(undefined);
+export type UserType = {
+  user: UserContextType;
+};
+
+const AuthContext = createContext<UserType | undefined>(undefined);
+
+// const AuthContext = createContext<AuthData | undefined>(undefined);
 
 const AuthProvider = (props: any) => {
   const [user, setUser] = useState(null);
