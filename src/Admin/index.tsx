@@ -79,13 +79,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 const AdminApp = () => (
-  <QueryClientProvider client={queryClient}>
-    <AntDesignApp>
-      <RouterProvider router={router} />
-    </AntDesignApp>
-  </QueryClientProvider>
+  // <QueryClientProvider client={queryClient}>
+  <AntDesignApp>
+    <RouterProvider router={router} />
+  </AntDesignApp>
+  // </QueryClientProvider>
 );
 export default AdminApp;

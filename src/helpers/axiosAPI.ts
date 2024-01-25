@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const token = localStorage.getItem('token');
-
 const unauthenticatedApi = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
@@ -9,12 +7,17 @@ const unauthenticatedApi = axios.create({
   },
 });
 
-const authenticatedApi = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  },
-});
+const getAuthenticatedApi = () => {
+  const token = localStorage.getItem('token');
+  console.log('token--------', token);
+  const authenticatedApi = axios.create({
+    baseURL: import.meta.env.VITE_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return authenticatedApi;
+};
 
-export { unauthenticatedApi, authenticatedApi };
+export { unauthenticatedApi, getAuthenticatedApi };

@@ -34,13 +34,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 const UnauthenticatedApp = () => (
-  <QueryClientProvider client={queryClient}>
-    <AntDesignApp>
-      <RouterProvider router={router} />
-    </AntDesignApp>
-  </QueryClientProvider>
+  // <QueryClientProvider client={queryClient}>
+  <AntDesignApp>
+    <RouterProvider router={router} />
+  </AntDesignApp>
+  // </QueryClientProvider>
 );
 export default UnauthenticatedApp;

@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import {
   forgetPasswordApi,
   getUserApi,
@@ -13,11 +18,19 @@ export const useRegisterApi = () => {
   });
 };
 export const useLoginApi = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: loginApi,
+    onSuccess: (response) => {
+      console.log('response in hook', response);
+      if (response && response.token) {
+        localStorage.setItem('token', response.token);
+      }
+      queryClient.invalidateQueries(['user']);
+    },
   });
 };
-export const useForgetPasswordApi = () => {
+export const useForgetPasswordApi = () => {``
   return useMutation({
     mutationFn: forgetPasswordApi,
   });
@@ -32,5 +45,7 @@ export const useGetUserApi = () => {
   return useQuery({
     queryKey: ['user'],
     queryFn: getUserApi,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 };

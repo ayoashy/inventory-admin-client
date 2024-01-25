@@ -26,12 +26,13 @@ const Login: React.FC = () => {
     }
     try {
       const response = await mutateAsync(loginState);
-      if (response && response.token) {
-        await message.success('Login successful!Navigating...');
-        localStorage.setItem('token', response.token);
-        // navigate('/');
-      }
-      window.location.href = '/';
+      // get user data
+      // if (response && response.token) {
+      await message.success('Login successful!Navigating...');
+      //   localStorage.setItem('token', response.token);
+      //   // navigate('/');
+      // }
+      // window.location.href = '/';
     } catch (error: any) {
       message.error(error);
     }
@@ -128,12 +129,11 @@ const Login: React.FC = () => {
 
               <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                 <button
-                  className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-black transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                  className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 disabled:bg-[#c6c6c6] disabled:border-[#c6c6c6]"
                   type="submit"
                   disabled={isLoading}
                 >
-                  {/* {isLoading ? 'loading ' : 'Login'} */}
-                  login
+                  {isLoading ? 'loading ' : 'Login'}
                 </button>
 
                 <p className="mt-4 text-sm text-gray-500 sm:mt-0">

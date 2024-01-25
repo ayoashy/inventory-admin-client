@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import UnauthenticatedApp from './Unauthenticated';
 import AdminApp from './Admin';
 import { AuthDataContext } from './context/authDataContext';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -30,11 +31,15 @@ const SelectApp = () => {
   );
 };
 
+const queryClient = new QueryClient();
+
 const App = () => {
   return (
-    <AuthProvider>
-      <SelectApp />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <SelectApp />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
 

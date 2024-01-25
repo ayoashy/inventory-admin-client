@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getUserApi } from '../data/api/auth';
 import Loader from '../common/Loader';
+import { useGetUserApi } from '../data/hooks/auth';
 type UserContextType = {
   email: string;
   name: string;
@@ -15,27 +16,19 @@ export type UserType = {
 
 const AuthContext = createContext<UserType | undefined>(undefined);
 
-// const AuthContext = createContext<AuthData | undefined>(undefined);
-
 const AuthProvider = (props: any) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const { data, isLoading } = useGetUserApi();
+
+  console.log('>>> use data outside hook: ', data);
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const data = await getUserApi();
-        setUser(data);
-        setLoading(false);
-      } catch (error) {
-        setUser(null);
-        setLoading(false);
-      }
-    };
-    getUser();
-  }, []);
+    if (!data) return;
+    setUser(data);
+  }, [data]);
 
-  if (loading) {
+  if (isLoading) {
     return <Loader />;
   }
 

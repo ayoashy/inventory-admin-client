@@ -1,5 +1,8 @@
 import { isAxiosError } from 'axios';
-import { authenticatedApi, unauthenticatedApi } from '../../helpers/axiosAPI';
+import {
+  getAuthenticatedApi,
+  unauthenticatedApi,
+} from '../../helpers/axiosAPI';
 
 type RegisterPostType = {
   name: string | undefined;
@@ -112,7 +115,7 @@ const resetPasswordApi = async ({
 
 const getUserApi = async () => {
   try {
-    const response = await authenticatedApi.get('get-user');
+    const response = await getAuthenticatedApi().get('get-user');
     console.log(response);
     return response.data;
   } catch (error: any) {
