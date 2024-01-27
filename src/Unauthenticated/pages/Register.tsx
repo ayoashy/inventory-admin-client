@@ -1,8 +1,7 @@
-import React, { FormEvent, useEffect, useState } from 'react';
-import { registerApi } from '../../data/api/auth';
+import  { FormEvent,  useState } from 'react';
 import { useRegisterApi } from '../../data/hooks/auth';
 import { Link } from 'react-router-dom';
-import { Alert, App } from 'antd';
+import {  App } from 'antd';
 
 const Register = () => {
   const { message } = App.useApp();
@@ -33,9 +32,8 @@ const Register = () => {
     }
     try {
       const response = await mutateAsync(modifiedObject);
-      if (response && response.token) {
-        localStorage.setItem('token', response.token);
-        message.success('User successfully created!');
+      if(response){
+        await message.success('User successfully created!');
       }
       setRegisterState({
         confirmPassword: '',

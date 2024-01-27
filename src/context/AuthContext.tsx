@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { getUserApi } from '../data/api/auth';
 import Loader from '../common/Loader';
 import { useGetUserApi } from '../data/hooks/auth';
@@ -26,6 +32,7 @@ const AuthProvider = (props: any) => {
   useEffect(() => {
     if (!data) return;
     setUser(data);
+    console.log('useffect thing here');
   }, [data]);
 
   if (isLoading) {

@@ -1,5 +1,4 @@
 import {
-  UseQueryOptions,
   useMutation,
   useQuery,
   useQueryClient,
@@ -13,8 +12,16 @@ import {
 } from '../api/auth';
 
 export const useRegisterApi = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: registerApi,
+    onSuccess: (response)=>{
+      if(response && response.token){
+localStorage.setItem('token', response.token);
+
+      }
+queryClient.invalidateQueries(['user'])
+    }
   });
 };
 export const useLoginApi = () => {

@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react';
 import { useLoginApi } from '../../data/hooks/auth';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { message } from 'antd';
 
 type LoginState = {
@@ -12,7 +12,6 @@ const Login: React.FC = () => {
   const envVariable = import.meta.env.VITE_BASE_URL;
   console.log(envVariable, 'environment variable');
 
-  const navigate = useNavigate();
   const [loginState, setLoginState] = useState<LoginState>({
     email: '',
     password: '',
@@ -26,13 +25,12 @@ const Login: React.FC = () => {
     }
     try {
       const response = await mutateAsync(loginState);
-      // get user data
-      // if (response && response.token) {
-      await message.success('Login successful!Navigating...');
-      //   localStorage.setItem('token', response.token);
-      //   // navigate('/');
-      // }
-      // window.location.href = '/';
+
+      if(response){
+
+        await message.success('Login successful!Navigating...');
+      }
+
     } catch (error: any) {
       message.error(error);
     }
