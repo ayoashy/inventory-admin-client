@@ -10,7 +10,7 @@ type RegisterPostType = {
   email: string | undefined;
 };
 
-type LoginPostType = Omit<RegisterPostType, 'name'>;
+export type LoginPostType = Omit<RegisterPostType, 'name'>;
 type ForgetPasswordPostType = Pick<RegisterPostType, 'email'>;
 type ResetPasswordType = {
   resetToken: string | undefined;
@@ -41,7 +41,7 @@ const registerApi = async (post: RegisterPostType) => {
 const loginApi = async (post: LoginPostType) => {
   try {
     console.log('start');
-    const response = await unauthenticatedApi.post('login', post);
+    const response = await unauthenticatedApi.post('auth/login', post);
     return response.data;
   } catch (error: any) {
     // throw simple error
@@ -115,7 +115,9 @@ const resetPasswordApi = async ({
 
 const getUserApi = async () => {
   try {
-    const response = await getAuthenticatedApi().get('get-user');
+    console.log('starting get user');
+
+    const response = await getAuthenticatedApi().get('auth/get-user');
     console.log(response);
     return response.data;
   } catch (error: any) {

@@ -53,7 +53,7 @@ export const useGetUserApi = () => {
   return useQuery({
     queryKey: ['user'],
     queryFn: getUserApi,
-    retry: false,
+    // retry: false,
     refetchOnWindowFocus: false,
   });
 };
