@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { ButtonsWithIcon } from './Buttons';
 import SingleProductForm from './SingleProductForm';
-import { useAddProductApi } from '../data/hooks/product';
+import { useAddProductApi, useGetProductApi } from '../data/hooks/product';
 import { useGetUserApi } from '../data/hooks/auth';
 import { message } from 'antd';
+import { getProductApi } from '../data/api/product';
 
 type ProductType = {
  name: string;
@@ -26,6 +27,8 @@ const AddProductForm = () => {
   setProducts(filteredProducts)
  }
 
+ const {data: getProductData,} = useGetProductApi()
+ console.log({getProductData});
  
 // const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
 //   let newArray = products.slice(0);
@@ -44,9 +47,13 @@ const handleChange = (index: number,e: ChangeEvent<HTMLInputElement> )=>{
   setProducts(newArray)
 }
 const {data, isLoading,} =  useGetUserApi()
+const {data: productData} =  useGetProductApi()
 const { mutateAsync,  } = useAddProductApi()
 
 // console.log('data', data.user._id);
+
+console.log({ productData });
+
 
 
 
