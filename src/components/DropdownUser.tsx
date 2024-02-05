@@ -55,7 +55,7 @@ const DropdownUser = () => {
 
         <span className="h-12 w-12 rounded-full flex justify-center items-center bg-primary ">
           {/* <img src={UserOne} alt="User" /> */}
-          <span className="text-2xl text-white">{userData?.user.name[0]}</span>
+          <span className="text-2xl text-white">{userData?.user.name[0].toUpperCase()}</span>
         </span>
 
         <svg

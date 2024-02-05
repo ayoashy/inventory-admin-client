@@ -20,7 +20,7 @@ type ResetPasswordType = {
 const registerApi = async (post: RegisterPostType) => {
   try {
     console.log('start');
-    const response = await unauthenticatedApi.post('register', post);
+    const response = await unauthenticatedApi.post('auth/register', post);
     return response.data;
   } catch (error: any) {
     console.log('this is whole error', error);

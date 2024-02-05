@@ -69,7 +69,7 @@ const handleSubmit = async  (e: any)=>{
   let isInvalidInput;
 
   for (let i = 0; i < products.length; i++) {
-    if(products[i].name === ''){
+    if(products[i].name === '' || products[i].price === 0 ){
       isInvalidInput = true;
     }
   }
@@ -106,6 +106,7 @@ setProducts([{name: '', quantity: 1, price: 0}])
           <div className="p-6.5">
             {products.map((product, index) => (
               <SingleProductForm
+              key={index}
                 handleRemove={() => handleRemove(index)}
                 index={index}
                 element={product}
