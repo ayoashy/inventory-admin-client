@@ -1,4 +1,5 @@
 import AddProductForm from '../../components/AddProductForm.tsx';
+import Card from '../../components/Card.tsx';
 import CardFour from '../../components/CardFour.tsx';
 import CardOne from '../../components/CardOne.tsx';
 import CardThree from '../../components/CardThree.tsx';
@@ -28,6 +29,7 @@ const ECommerce = () => {
         <CardTwo sales={data?.processProduct.totalSales}/>
         <CardThree product={data?.processProduct.totalProduct}/>
         <CardFour user={data?.processProduct.totalUser} />
+        <Card/>
       </div>
 
     <AddProductForm/>
