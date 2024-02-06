@@ -29,7 +29,7 @@ const ECommerce = () => {
         <CardTwo sales={data?.processProduct.totalSales}/>
         <CardThree product={data?.processProduct.totalProduct}/>
         <CardFour user={data?.processProduct.totalUser} />
-        <Card/>
+        {/* <Card/> */}
       </div>
 
     <AddProductForm/>

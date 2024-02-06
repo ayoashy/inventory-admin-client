@@ -15,6 +15,7 @@ import Settings from '../pages/Settings';
 import Alerts from '../pages/UiElements/Alerts';
 import Chart from '../pages/Chart';
 import Buttons from '../pages/UiElements/Buttons';
+import DisplayProduct from '../pages/Dashboard/DisplayProducts';
 // const Calendar = lazy(() => import('../pages/Calendar'));
 
 const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <ECommerce />,
         index: true,
+      },
+      {
+        path: '/products',
+        element: <DisplayProduct />,
       },
       {
         path: '/calendar',
