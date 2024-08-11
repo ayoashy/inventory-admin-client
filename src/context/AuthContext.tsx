@@ -1,11 +1,9 @@
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react';
-import { getUserApi } from '../data/api/auth';
 import Loader from '../common/Loader';
 import { useGetUserApi } from '../data/hooks/auth';
 type UserContextType = {
@@ -25,9 +23,7 @@ const AuthContext = createContext<UserType | undefined>(undefined);
 const AuthProvider = (props: any) => {
   const [user, setUser] = useState(null);
 
-  const { data, isLoading } = useGetUserApi();
-
-  console.log('>>> use data outside hook: ', data);
+  const { data, isLoading } = useGetUserApi(); 
 
   useEffect(() => {
     if (!data) return;

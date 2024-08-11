@@ -1,4 +1,3 @@
-import { isAxiosError } from 'axios';
 import {
   getAuthenticatedApi,
   unauthenticatedApi,
@@ -17,127 +16,54 @@ type ResetPasswordType = {
   password: string | undefined;
 };
 
-const registerApi = async (post: RegisterPostType) => {
-  try {
-    console.log('start');
-    const response = await unauthenticatedApi.post('auth/register', post);
-    return response.data;
-  } catch (error: any) {
-    console.log('this is whole error', error);
-    if (error.message === 'Network Error') {
-      console.log(error.message);
-      throw error.message;
-    }
-    if (error.response.data.error) {
-      throw error.response.data.error;
-    } else if (error.response) {
-      console.log('this is a response error', error.response);
-    } else {
-      console.log('error', error.message);
-    }
-    throw error;
+// Generic error handler
+const handleApiError = (error: any): never => {
+  console.log('Error:', error);
+
+  if (error.code === 'ERR_BAD_REQUEST' || error.message === 'Network Error') {
+    throw new Error('Network Error');
   }
-};
-const loginApi = async (post: LoginPostType) => {
-  try {
-    console.log('start');
-    const response = await unauthenticatedApi.post('auth/login', post);
-    return response.data;
-  } catch (error: any) {
-    // throw simple error
-    console.log('this is whole error', error);
-    if (error.message === 'Network Error') {
-      console.log(error.message);
-      throw error.message;
-    }
-    if (error.response.data.error) {
-      console.log('this is a request error', error.request);
-      throw error.response.data.error;
-    } else if (error.response) {
-      console.log('this is a response error', error.response);
-    } else {
-      console.log('error', error.message);
-    }
-    throw error;
-  }
-};
-const forgetPasswordApi = async (post: ForgetPasswordPostType) => {
-  try {
-    const response = await unauthenticatedApi.put('forgotPassword', post);
-    return response.data;
-  } catch (error: any) {
-    // throw simple error
-    console.log('this is whole error', error);
-    if (error.message === 'Network Error') {
-      console.log(error.message);
-      throw error.message;
-    }
-    if (error.response.data.error) {
-      console.log('this is a request error', error.request);
-      throw error.response.data.error;
-    } else if (error.response) {
-      console.log('this is a response error', error.response);
-    } else {
-      console.log('error', error.message);
-    }
-    throw error;
+
+  if (error.response?.data?.error) {
+    console.log('Request error:', error.request);
+    throw new Error(error.response.data.error);
+  } else if (error.response) {
+    console.log('Response error:', error.response);
+    throw new Error('An error occurred with the response');
+  } else {
+    throw new Error(error.message || 'An unknown error occurred');
   }
 };
 
-const resetPasswordApi = async ({
-  resetToken,
-  password,
-}: ResetPasswordType) => {
+// Generic API call function
+const apiCall = async <T>(
+  method: 'get' | 'post' | 'put',
+  url: string,
+  data?: any,
+  authenticated: boolean = false,
+): Promise<T> => {
   try {
-    console.log({ resetToken, password }, 'payload');
-    const response = await unauthenticatedApi.put(
-      `resetPassword/${resetToken}`,
-      password,
-    );
-    console.log('this is response', response);
+    const api = authenticated ? getAuthenticatedApi() : unauthenticatedApi;
+    const response = await api[method](url, data);
     return response.data;
-  } catch (error: any) {
-    // throw simple error
-    console.log('this is whole error', error);
-    if (error.message === 'Network Error') {
-      console.log(error.message);
-      throw error.message;
-    }
-    if (error.response.data.error) {
-      console.log('this is a request error', error.request);
-      throw error.response.data.error;
-    } else {
-      console.log('error', error.message);
-    }
-    throw error;
+  } catch (error) {
+    return handleApiError(error);
   }
 };
 
-const getUserApi = async () => {
-  try {
-    console.log('starting get user');
+const registerApi = (post: RegisterPostType) =>
+  apiCall<any>('post', 'auth/register', post);
 
-    const response = await getAuthenticatedApi().get('auth/get-user');
-    console.log(response);
-    return response.data;
-  } catch (error: any) {
-    console.log('this is whole error', error);
-    if (error?.message === 'Network Error') {
-      console.log(error?.message);
-      throw error?.message;
-    }
-    if (error?.response.data.error) {
-      console.log('this is a request error', error?.request);
-      throw error?.response.data.error;
-    } else if (error?.response) {
-      console.log('this is a response error', error?.response);
-    } else {
-      console.log('error', error?.message);
-    }
-    console.log(error);
-    throw error;
-  }
-};
+const loginApi = (post: LoginPostType) =>
+  apiCall<any>('post', 'auth/login', post);
+
+const forgetPasswordApi = (post: ForgetPasswordPostType) =>
+  apiCall<any>('put', 'forgotPassword', post);
+
+const resetPasswordApi = ({ resetToken, password }: ResetPasswordType) =>
+  apiCall<any>('put', `resetPassword/${resetToken}`, { password });
+
+const getUserApi = () => apiCall<any>('get', 'auth/get-user', undefined, true);
 
 export {
   registerApi,

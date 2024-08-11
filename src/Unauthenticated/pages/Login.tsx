@@ -1,7 +1,7 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState,  } from 'react';
 import { useLoginApi } from '../../data/hooks/auth';
-import { Link } from 'react-router-dom';
 import { message } from 'antd';
+import { Link } from 'react-router-dom';
 
 type LoginState = {
   email: string;
@@ -9,8 +9,6 @@ type LoginState = {
 };
 
 const Login: React.FC = () => {
-  const envVariable = import.meta.env.VITE_BASE_URL;
-  console.log(envVariable, 'environment variable');
 
   const [loginState, setLoginState] = useState<LoginState>({
     email: '',
