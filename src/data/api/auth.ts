@@ -17,27 +17,34 @@ type ResetPasswordType = {
 };
 
 // Generic error handler
-const handleApiError = (error: any): never => {
+export const handleApiError = (error: any): never => {
   console.log('Error:', error);
 
-  if (error.code === 'ERR_BAD_REQUEST' || error.message === 'Network Error') {
+  // if (error.code === 'ERR_BAD_REQUEST' || error.message === 'Network Error') {
+  if ( error.message === 'Network Error') {
     throw new Error('Network Error');
   }
 
-  if (error.response?.data?.error) {
-    console.log('Request error:', error.request);
-    throw new Error(error.response.data.error);
-  } else if (error.response) {
-    console.log('Response error:', error.response);
-    throw new Error('An error occurred with the response');
-  } else {
-    throw new Error(error.message || 'An unknown error occurred');
+  if (
+    error.response.data.error ===
+    'MongoServerSelectionError: getaddrinfo ENOTFOUND ac-hjchve5-shard-00-00.dwx5qwf.mongodb.net'
+  ){
+    throw new Error("Bad Network")
   }
+    if (error.response?.data?.error) {
+      console.log('Request error:', error.request);
+      throw new Error(error.response.data.error);
+    } else if (error.response) {
+      console.log('Response error:', error.response);
+      throw new Error('An error occurred with the response');
+    } else {
+      throw new Error(error.message || 'An unknown error occurred');
+    }
 };
 
 // Generic API call function
-const apiCall = async <T>(
-  method: 'get' | 'post' | 'put',
+export const apiCall = async <T>(
+  method: 'get' | 'post' | 'put' | 'delete',
   url: string,
   data?: any,
   authenticated: boolean = false,

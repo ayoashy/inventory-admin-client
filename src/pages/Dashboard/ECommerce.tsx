@@ -6,17 +6,17 @@ import CardThree from '../../components/CardThree.tsx';
 import CardTwo from '../../components/CardTwo.tsx';
 
 import { useGetProductApi } from '../../data/hooks/product.ts';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 const ECommerce = () => {
   const {data,isLoading} = useGetProductApi()
   const navigate = useNavigate()
   console.log('this should be a homepage');
 
-    useEffect(() => {
-      // Perform the URL change on initial render
-      navigate('/');
-    }, []);
+    // useEffect(() => {
+    //   // Perform the URL change on initial render
+    //   navigate('/');
+    // }, []);
   
 
   

@@ -1,10 +1,11 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { ButtonsWithIcon } from './Buttons';
 import SingleProductForm from './SingleProductForm';
-import { useAddProductApi, useGetProductApi } from '../data/hooks/product';
+import { useAddProductApi, useEditProductApi, useGetProductApi } from '../data/hooks/product';
 import { useGetUserApi } from '../data/hooks/auth';
 import { message } from 'antd';
 import { getProductApi } from '../data/api/product';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 type ProductType = {
  name: string;
@@ -12,29 +13,41 @@ type ProductType = {
  quantity: number;
 }
 
+type ProductTypeExtend = ProductType & { _id?: string }
+
+
 const AddProductForm = () => {
- const [products,setProducts] = useState<ProductType[]>([{name: '', quantity: 1, price: 0}])
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+ const [products, setProducts] = useState<ProductTypeExtend[]>([
+   { name: '', quantity: 1, price: 0 },
+ ]);
+   const navigate = useNavigate();
+
+useEffect(()=>{
+  if(editId){
+    let editData = localStorage.getItem('editData')
+    if(editData){
+      editData = JSON.parse(editData)
+      const editProduct = editData?.products 
+      setProducts(editProduct)
+    }
+  }
+},[])
 
  const handleAdd  = ()=>{
   setProducts([...products, {name:'', quantity: 1, price: 0}])
-
  }
+
+
  const handleRemove = (i: number)=>{
   let newProduct = [...products]
-  // newProduct.splice(i,1)
-  // setProducts(newProduct)
   const filteredProducts = products.filter((item, index)=> index !== i )
   setProducts(filteredProducts)
  }
-
  const {data: getProductData,} = useGetProductApi()
  console.log({getProductData});
- 
-// const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
-//   let newArray = products.slice(0);
-//   newArray[index][e.target.name] = e.target.value;
-//   setProducts(newArray)
-// };
+
 
 const handleChange = (index: number,e: ChangeEvent<HTMLInputElement> )=>{
   const newArray  = products.map((prod, ind)=>{
@@ -49,18 +62,9 @@ const handleChange = (index: number,e: ChangeEvent<HTMLInputElement> )=>{
 const {data, isLoading,} =  useGetUserApi()
 const {data: productData} =  useGetProductApi()
 const { mutateAsync,  } = useAddProductApi()
+const { mutateAsync: editMutateAsync } = useEditProductApi();
 
-// console.log('data', data.user._id);
-
-console.log({ productData });
-
-
-
-
-
-
-
-const handleSubmit = async  (e: any)=>{
+const handleAddProduct = async  (e: any)=>{
   const postObject = {
     products,
     authorId: data.user._id
@@ -93,6 +97,51 @@ setProducts([{name: '', quantity: 1, price: 0}])
 }
 }
 
+const handleEditProduct = async (e: any) => {
+  const postObject = {
+    products,
+    authorId: data.user._id,
+  };
+
+  let isInvalidInput;
+
+  for (let i = 0; i < products.length; i++) {
+    if (products[i].name === '' || products[i].price === 0) {
+      isInvalidInput = true;
+    }
+  }
+
+  e.preventDefault();
+
+  try {
+    if (isInvalidInput) {
+      await message.error('Product name can not be empty');
+      return;
+    }
+    const formattedProduct = products.map((product)=>{
+      // remove _id prop from product object
+      const { _id, ...rest } = product;
+      return rest;
+    })
+    const response = await editMutateAsync({
+      id: editId as string,
+      post: { products: formattedProduct },
+    });
+    if (response) {
+      message.success('Product successfully updated');
+    }
+    localStorage.removeItem('editData');
+    navigate('/')
+
+
+    setProducts([{ name: '', quantity: 1, price: 0 }]);
+  } catch (error: any) {
+    await message.error(error);
+  }
+};
+
+const handleSubmit = editId ? handleEditProduct : handleAddProduct;
+
  
   return (
     <div>
@@ -106,7 +155,7 @@ setProducts([{name: '', quantity: 1, price: 0}])
           <div className="p-6.5">
             {products.map((product, index) => (
               <SingleProductForm
-              key={index}
+                key={index}
                 handleRemove={() => handleRemove(index)}
                 index={index}
                 element={product}
@@ -121,8 +170,11 @@ setProducts([{name: '', quantity: 1, price: 0}])
               <ButtonsWithIcon text="Add More Product" handleAdd={handleAdd} />
             </div>
 
-            <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray" disabled={isLoading}>
-              Add product
+            <button
+              className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
+              disabled={isLoading}
+            >
+              {editId ? 'Update Product': 'Add Product'}
             </button>
           </div>
         </form>

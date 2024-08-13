@@ -3,7 +3,11 @@ import Loader from '../../common/Loader';
 import CardFour from '../../components/CardFour';
 import CardThree from '../../components/CardThree';
 import CardTwo from '../../components/CardTwo';
-import { useGetProductApi } from '../../data/hooks/product';
+import { useDeleteProductApi, useGetProductApi } from '../../data/hooks/product';
+import { useGetUserApi } from '../../data/hooks/auth';
+import { message } from 'antd';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type ProductType = {
   name: string;
@@ -23,7 +27,13 @@ type DisplayProductType = {
 };
 
 const DisplayProduct = () => {
-  const { data, isLoading } = useGetProductApi();
+  const { data, isLoading, error } = useGetProductApi();
+
+if(error){
+  message.error('message')
+}
+  
+
 
   if (isLoading) return <Loader />;
 
@@ -47,7 +57,29 @@ type ProductCardProps = {
   product: DisplayProductType;
 };
 
+// export const handleEdit
+
+
 const ProductCard = ({ product }: ProductCardProps) => {
+  const deleteProductMutation = useDeleteProductApi();
+  const {error: deleteError} = deleteProductMutation
+  const { data: userData, isLoading } = useGetUserApi();
+  const authorId = userData.user._id;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (deleteProductMutation.isError) {
+      message.error("Unable to delete product" as string);
+    }
+    if (deleteProductMutation.isSuccess) {
+      message.success('Product deleted successfully');
+    }
+  }, [deleteProductMutation.isError, deleteProductMutation.isSuccess]);
+
+  const handleDelete = (id: string) => {
+    deleteProductMutation.mutateAsync({id});
+  };
+
   const totalQuantity = product.products.reduce(
     (sum, prod) => sum + prod.quantity,
     0,
@@ -56,6 +88,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
     (sum, prod) => sum + prod.price * prod.quantity,
     0,
   );
+
+  const handleEdit = (product: DisplayProductType) => {
+    localStorage.setItem('editData', JSON.stringify(product));
+    navigate(`/?edit=${product._id}`);
+  };
 
   return (
     <div className="rounded-lg border border-stroke bg-white p-6 shadow-md dark:border-strokedark dark:bg-boxdark">
@@ -113,12 +150,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <div className="mt-4 flex justify-end space-x-2">
         <button
           // onClick={() => onEdit(product._id)}
+          onClick={()=>handleEdit(product)
+          }
           className="p-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
         >
           <FaEdit className="w-5 h-5" />
         </button>
         <button
-          // onClick={() => onDelete(product._id)}
+          onClick={() => handleDelete(product._id)}
           className="p-2 text-red-600 hover:text-red-800 transition-colors duration-200"
         >
           <FaTrash className="w-5 h-5" />
