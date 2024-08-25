@@ -23,7 +23,7 @@ const ResetPassword = () => {
         await message.success('Password successfully changed!');
       }
     } catch (error: any) {
-      await message.error(error);
+      await message.error(error|| "An error occurred with the response");
     }
   };
 

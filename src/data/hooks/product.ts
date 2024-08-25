@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { addProductApi, deleteProductApi, editProductApi, getProductApi } from "../api/product";
+import { addProductApi, deleteProductApi, editProductApi, getProductApi, getUserProductApi } from "../api/product";
 
 export const useAddProductApi = () => {
   const queryClient = useQueryClient();
@@ -16,6 +16,15 @@ export const useGetProductApi = () => {
   return useQuery({
     queryKey: ['product'],
     queryFn: getProductApi,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetUserProductApi = () => {
+  return useQuery({
+    queryKey: ['product'],
+    queryFn: getUserProductApi,
     retry: false,
     refetchOnWindowFocus: false,
   });

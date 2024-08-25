@@ -65,10 +65,10 @@ const loginApi = (post: LoginPostType) =>
   apiCall<any>('post', 'auth/login', post);
 
 const forgetPasswordApi = (post: ForgetPasswordPostType) =>
-  apiCall<any>('put', 'forgotPassword', post);
+  apiCall<any>('put', 'auth/forgotPassword', post);
 
 const resetPasswordApi = ({ resetToken, password }: ResetPasswordType) =>
-  apiCall<any>('put', `resetPassword/${resetToken}`, { password });
+  apiCall<any>('put', `auth/resetPassword/${resetToken}`, { password });
 
 const getUserApi = () => apiCall<any>('get', 'auth/get-user', undefined, true);
 
