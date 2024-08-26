@@ -32,7 +32,7 @@ const Login: React.FC = () => {
     } catch (error: any) {
       message.error(error);
     }
-  };
+  }; 
 
   return (
     <section className="bg-white">

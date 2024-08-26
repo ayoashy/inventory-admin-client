@@ -9,6 +9,7 @@ import {
   loginApi,
   registerApi,
   resetPasswordApi,
+  updatePasswordApi,
 } from '../api/auth';
 
 export const useRegisterApi = () => {
@@ -46,6 +47,12 @@ export const useForgetPasswordApi = () => {``
 export const useResetPasswordApi = () => {
   return useMutation({
     mutationFn: resetPasswordApi,
+  });
+};
+
+export const useUpdatePasswordApi = () => {
+  return useMutation({
+    mutationFn: updatePasswordApi,
   });
 };
 

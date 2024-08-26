@@ -16,6 +16,11 @@ type ResetPasswordType = {
   password: string | undefined;
 };
 
+export type UpdatePasswordType = {
+  currentPassword: string | undefined;
+  newPassword: string | undefined;
+};
+
 // Generic error handler
 export const handleApiError = (error: any): never => {
   console.log('Error:', error);
@@ -69,6 +74,12 @@ const forgetPasswordApi = (post: ForgetPasswordPostType) =>
 
 const resetPasswordApi = ({ resetToken, password }: ResetPasswordType) =>
   apiCall<any>('put', `auth/resetPassword/${resetToken}`, { password });
+
+export const updatePasswordApi = ({
+  currentPassword,
+  newPassword,
+}: UpdatePasswordType) =>
+  apiCall<any>('put', `auth/updatePassword`, { currentPassword, newPassword },true);
 
 const getUserApi = () => apiCall<any>('get', 'auth/get-user', undefined, true);
 

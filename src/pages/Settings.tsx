@@ -1,44 +1,45 @@
 import Breadcrumb from '../components/Breadcrumb';
-import userThree from '../images/user/user-03.png';
 import fireToast from '../hooks/fireToast';
-import { Table } from "../components/TableSettings";
-import { Modal } from "../components/ModalSettings";
 import { useState,useEffect } from "react";
+import { useAuth } from '../context/AuthContext';
+import { useUpdatePasswordApi } from '../data/hooks/auth';
+import { message } from 'antd';
+
+export type UpdatePasswordType = {
+  currentPassword: string 
+  newPassword: string 
+};
 const Settings = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [rows, setRows] = useState(localStorage.getItem("alertSettings")?JSON.parse(localStorage.getItem("alertSettings")):[]);
-  useEffect(() => {
-    // storing input name
-    localStorage.setItem("alertSettings", JSON.stringify(rows));
-  }, [rows]);
-  const [rowToEdit, setRowToEdit] = useState(null);
+  const userData = useAuth();
+  const { mutateAsync } = useUpdatePasswordApi();
+  console.log(userData);
+  
+  const [passwordObject, setPasswordObject] = useState<UpdatePasswordType>({currentPassword:'',
+    newPassword: ''
+  });
 
-  const handleDeleteRow = (targetIndex) => {
-    setRows(rows.filter((_, idx) => idx !== targetIndex));
-  };
+  const handleUpdate = async (e: any) => {
+    e.preventDefault();
+    if (
+      passwordObject.currentPassword.length < 6 ||
+      passwordObject.newPassword.length < 6
+    ) {
+      return message.error('Password should be atleast 6 characters');
+    }
+    try {
+      const response = await mutateAsync({currentPassword: passwordObject.currentPassword, newPassword: passwordObject.newPassword});
 
-  const handleEditRow = (idx) => {
-    setRowToEdit(idx);
-
-    setModalOpen(true);
-  };
-
-  const handleSubmit = (newRow) => {
-    rowToEdit === null
-      ? setRows([...rows, newRow])
-      : setRows(
-          rows.map((currRow, idx) => {
-            if (idx !== rowToEdit) return currRow;
-
-            return newRow;
-          })
-        );
+      if (response) {
+        await message.success('Password updated successful!Navigating...');
+      }
+    } catch (error: any) {
+      message.error(error);
+    }
   };
 
   return (
     <>
       <div className="mx-auto max-w-270">
-        
         <Breadcrumb pageName="Settings" />
 
         <div className="grid grid-cols-5 gap-8">
@@ -52,12 +53,12 @@ const Settings = () => {
               <div className="p-7">
                 <form action="#">
                   <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                    <div className="w-full sm:w-1/2">
+                    <div className="w-full">
                       <label
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="fullName"
                       >
-                        Full Name
+                        Name
                       </label>
                       <div className="relative">
                         <span className="absolute left-4.5 top-4">
@@ -88,29 +89,14 @@ const Settings = () => {
                         <input
                           className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                           type="text"
-                          name="fullName"
-                          id="fullName"
-                          placeholder="Devid Jhon"
-                          defaultValue="Devid Jhon"
+                          name="name"
+                          id="name"
+                          value={userData?.user?.name}
+                          placeholder={userData?.user?.name}
+                          defaultValue={userData?.user?.name}
+                          disabled
                         />
                       </div>
-                    </div>
-
-                    <div className="w-full sm:w-1/2">
-                      <label
-                        className="mb-3 block text-sm font-medium text-black dark:text-white"
-                        htmlFor="phoneNumber"
-                      >
-                        Phone Number
-                      </label>
-                      <input
-                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        type="text"
-                        name="phoneNumber"
-                        id="phoneNumber"
-                        placeholder="+990 3343 7865"
-                        defaultValue="+990 3343 7865"
-                      />
                     </div>
                   </div>
 
@@ -152,8 +138,10 @@ const Settings = () => {
                         type="email"
                         name="emailAddress"
                         id="emailAddress"
-                        placeholder="devidjond45@gmail.com"
-                        defaultValue="devidjond45@gmail.com"
+                        disabled
+                        value={userData?.user?.email}
+                        placeholder={userData?.user?.email}
+                        defaultValue={userData?.user?.email}
                       />
                     </div>
                   </div>
@@ -163,19 +151,19 @@ const Settings = () => {
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="Username"
                     >
-                      Username
+                      User Type
                     </label>
                     <input
                       className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                       type="text"
-                      name="Username"
-                      id="Username"
-                      placeholder="devidjhon24"
-                      defaultValue="devidjhon24"
+                      name="type"
+                      id="type"
+                      value={userData?.user?.type}
+                      disabled
                     />
                   </div>
 
-                  <div className="mb-5.5">
+                  {/* <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="Username"
@@ -223,21 +211,21 @@ const Settings = () => {
                         defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris tempus ut. Donec fermentum blandit aliquet."
                       ></textarea>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="flex justify-end gap-4.5">
-                    <button
+                  <div className="flex justify-ends gap-4.5">
+                    {/* <button
                       className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                       type="submit"
                     >
                       Cancel
-                    </button>
+                    </button> */}
                     <button
                       className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
                       type="submit"
                       onClick={fireToast}
                     >
-                      Save
+                      Update Password
                     </button>
                   </div>
                 </form>
@@ -248,12 +236,12 @@ const Settings = () => {
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
-                  Your Photo
+                  Update Password
                 </h3>
               </div>
               <div className="p-7">
-                <form action="#">
-                  <div className="mb-4 flex items-center gap-3">
+                <form onSubmit={handleUpdate}>
+                  {/* <div className="mb-4 flex items-center gap-3">
                     <div className="h-14 w-14 rounded-full">
                       <img src={userThree} alt="User" />
                     </div>
@@ -270,8 +258,8 @@ const Settings = () => {
                         </button>
                       </span>
                     </div>
-                  </div>
-
+                  </div> */}
+                  {/* 
                   <div
                     id="FileUpload"
                     className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
@@ -317,6 +305,97 @@ const Settings = () => {
                       <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
                       <p>(max, 800 X 800px)</p>
                     </div>
+                  </div> */}
+                  <div className="w-full  mb-4">
+                    <label
+                      className="mb-3 block text-sm font-medium text-black dark:text-white"
+                      htmlFor="password"
+                    >
+                      Current Password
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4.5 top-4">
+                        <svg
+                          className="fill-current"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g opacity="0.8">
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M12 2C9.23858 2 7 4.23858 7 7V10H5C4.44772 10 4 10.4477 4 11V20C4 20.5523 4.44772 21 5 21H19C19.5523 21 20 20.5523 20 20V11C20 10.4477 19.5523 10 19 10H17V7C17 4.23858 14.7614 2 12 2ZM9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10H9ZM6 12H18V19H6V12ZM12 14C12.5523 14 13 14.4477 13 15V17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17V15C11 14.4477 11.4477 14 12 14Z"
+                              fill=""
+                            />
+                          </g>
+                        </svg>
+                      </span>
+                      <input
+                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        type="password"
+                        name="password"
+                        id="password"
+                        value={passwordObject.currentPassword}
+                        onChange={(e) =>
+                          setPasswordObject({
+                            ...passwordObject,
+                            currentPassword: e.target.value,
+                          })
+                        }
+                        // value={userData?.user?.password}
+                        placeholder="Enter your password"
+                        // defaultValue={userData?.user?.password}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="w-full mb-4">
+                    <label
+                      className="mb-3 block text-sm font-medium text-black dark:text-white"
+                      htmlFor="password"
+                    >
+                      New Password
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4.5 top-4">
+                        <svg
+                          className="fill-current"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g opacity="0.8">
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M12 2C9.23858 2 7 4.23858 7 7V10H5C4.44772 10 4 10.4477 4 11V20C4 20.5523 4.44772 21 5 21H19C19.5523 21 20 20.5523 20 20V11C20 10.4477 19.5523 10 19 10H17V7C17 4.23858 14.7614 2 12 2ZM9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10H9ZM6 12H18V19H6V12ZM12 14C12.5523 14 13 14.4477 13 15V17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17V15C11 14.4477 11.4477 14 12 14Z"
+                              fill=""
+                            />
+                          </g>
+                        </svg>
+                      </span>
+                      <input
+                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        type="password"
+                        name="password"
+                        id="password"
+                        value={passwordObject.newPassword}
+                        onChange={(e) =>
+                          setPasswordObject({
+                            ...passwordObject,
+                            newPassword: e.target.value,
+                          })
+                        }
+                        // value={userData?.user?.password}
+                        placeholder="Enter your password"
+                        // defaultValue={userData?.user?.password}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-end gap-4.5">
@@ -330,7 +409,7 @@ const Settings = () => {
                       className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
                       type="submit"
                     >
-                      Save
+                      Update Password
                     </button>
                   </div>
                 </form>
