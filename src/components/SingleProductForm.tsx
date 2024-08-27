@@ -17,7 +17,7 @@ type SingleProductFormType = {
 const SingleProductForm = (prop: SingleProductFormType) => {
   return (
     <div>
-      <div className="mb-4.5 flex items-center flex-colsx gap-6 xl:flex-row">
+      <div className="mb-4.5 flex items-center  gap-2 lg:gap-6 xl:flex-row">
         <div className="w-full xl:w-1/3">
           <label className="mb-2.5 block text-black dark:text-white">
             Product
@@ -57,12 +57,6 @@ const SingleProductForm = (prop: SingleProductFormType) => {
             onChange={(e)=>prop.handleChange(prop.index, e)}
             name='quantity'
           />
-        </div>
-        <div className="w-1/2 xl:w-1/3 h-full">
-          <label className="mb-2.5 block text-black dark:text-white">
-            action
-          </label>
-        { prop.index > 0 &&  <ButtonsWithIcon text="Remove" handleAdd={prop.handleRemove} />}
         </div>
       </div>
     </div>
